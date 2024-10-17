@@ -1,0 +1,281 @@
+using System;
+using System.Collections.Generic;
+
+internal class Program
+{
+    private struct Produto // struct 
+    {
+        public int validade;
+
+        public int quantidade;
+
+        public string nome;
+
+        public double precouni;
+    }
+
+    public static int ValidaInt()// metodo para validar se é inteiro 
+    {
+        int valor;
+        
+        while (!int.TryParse(Console.ReadLine(), out valor))
+        {
+            Console.WriteLine("Por favor, insira um valor numérico válido");
+        }
+        return valor;
+    }
+    public static double ValidaDouble()// metodo para validar se é double 
+    {
+        double valor;
+        while (!double.TryParse(Console.ReadLine(), out valor))
+        {
+            Console.WriteLine("Por favor, insira um valor numérico válido." +
+                "(utilize virgula ao inves de ponto ao escrever ex: 0,5)");
+        }
+        return valor;
+    }
+    public static string ValidaString() // metodo para validar se é string
+    {
+        string input = Console.ReadLine();
+        while (string.IsNullOrEmpty(input))
+        {
+            Console.WriteLine("Por favor, insira um valor válido.");
+            input = Console.ReadLine();
+        }
+        return input;
+    }
+
+    public static void Main(string[] args)
+    {                                                           // lista 
+        List<Produto> listproduct = new List<Produto>();
+        bool continuar = true;
+        Console.WriteLine("Bem vindo! Digite qualquer tecla para continuar");
+        Console.ReadLine();
+        Console.Clear();
+        while (continuar)
+        {
+            Console.WriteLine("Que procedimento deseja fazer? Escreva o número do procedimento:");
+            Console.WriteLine("1 - Adicionar produto ");
+            Console.WriteLine("2 - Remover produto");
+            Console.WriteLine("3 - Procurar produto");
+            Console.WriteLine("4 - Inserir produto");
+            Console.WriteLine("5 - Mostrar todos os produtos");
+            Console.WriteLine("6 - Ordenar produtos");
+            Console.WriteLine("7 - alterar");
+            Console.WriteLine("8 - Sair");
+            switch (ValidaInt())
+            {
+                case 1:                                             //Adicionar
+                    {
+                        Console.Clear();
+                        Produto a = default(Produto);
+                        Console.WriteLine("Escreva o nome do produto: ");
+                        a.nome = ValidaString();
+                        Console.WriteLine("Escreva a validade (em dias): ");
+                        a.validade = ValidaInt();
+                        Console.WriteLine("Escreva a quantidade: ");
+                        a.quantidade = ValidaInt();
+                        Console.WriteLine("Escreva o preço da unidade: ");
+                        a.precouni = ValidaDouble();
+                        listproduct.Add(a);
+                        Console.WriteLine("Produto adicionado com sucesso!\n");
+                        break;
+                    }
+                case 2:                                             //remover
+                    {
+                        Console.Clear();
+                        foreach (Produto produto2 in listproduct)
+                        {
+                            DateTime today = DateTime.Today;
+                            DateTime validityDate = today.AddDays(produto2.validade);
+                            Console.WriteLine($"|Nome: {produto2.nome}| Validado até: {validityDate.Day} de {validityDate.ToString("MMMM")} de {validityDate.Year}| Quantidade: {produto2.quantidade}| Preço: {produto2.precouni}|Valor total:{produto2.quantidade * produto2.precouni}€|\n");
+                        }
+                        Console.WriteLine("Escreva a posição do produto que deseja remover: ");
+                        int posicaoRemover = ValidaInt();
+                        if (posicaoRemover >= 0 && posicaoRemover <= listproduct.Count)
+                        {
+
+                            listproduct.RemoveAt(posicaoRemover-1);
+                            Console.WriteLine("Produto na posicao {0} removido com sucesso!\n",posicaoRemover);
+                            foreach (Produto produto2 in listproduct)
+                            {
+                                DateTime today = DateTime.Today;
+                                DateTime validityDate = today.AddDays(produto2.validade);
+                                Console.WriteLine($"|Nome: {produto2.nome}| Validado até: {validityDate.Day} de {validityDate.ToString("MMMM")} de {validityDate.Year}| Quantidade: {produto2.quantidade}| Preço: {produto2.precouni}|Valor total:{produto2.quantidade * produto2.precouni}€|\n");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Posição inválida!\n");
+                        }
+                        break;
+                    }
+                case 3:                                     //Procurar
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Escreva o nome do produto que quer procurar: ");
+                        string nomeProcurar = ValidaString();
+                        bool encontrado = false;
+                        foreach (Produto produto in listproduct)
+                        {
+                            if (produto.nome.ToLower() == nomeProcurar.ToLower())
+                            {
+                                Console.WriteLine($"Produto encontrado: {produto.nome}, Validade: {produto.validade}," +
+                                    $" Quantidade: {produto.quantidade}, Preço: {produto.precouni}\n");
+                                encontrado = true;
+                                break;
+                            }
+                        }
+                        if (encontrado==false)
+                        {
+                            Console.WriteLine("Produto não encontrado\n");
+                        }
+                        break;
+                    }
+                case 4:                                                       // inserir
+                    {
+                        Console.Clear();
+                        foreach (Produto produto2 in listproduct)
+                        {
+                            DateTime today = DateTime.Today;
+                            DateTime validityDate = today.AddDays(produto2.validade);
+                            Console.WriteLine($"|Nome: {produto2.nome}| Validado até: {validityDate.Day} de {validityDate.ToString("MMMM")} de {validityDate.Year}| Quantidade: {produto2.quantidade}| Preço: {produto2.precouni}|Valor total:{produto2.quantidade * produto2.precouni}€|\n");
+                        }
+                        Console.Write("Insira a posição do produto para inserir: ");
+                        int posicaoInserir = ValidaInt();
+                        if (posicaoInserir <= 0 || posicaoInserir > listproduct.Count)
+                        {
+                            Console.WriteLine("Posição inválida! Por favor, escolha uma " +
+                                "posição entre 1 e " + listproduct.Count);
+                            break;
+                        }
+
+                        Produto novoProduto = default(Produto);
+                        Console.WriteLine("Escreva o nome do novo produto:");
+                        novoProduto.nome = ValidaString();
+                        Console.WriteLine("Escreva a validade (em dias):");
+                        novoProduto.validade = ValidaInt();
+                        Console.WriteLine("Escreva a quantidade:");
+                        novoProduto.quantidade = ValidaInt();
+                        Console.WriteLine("Escreva o preço da unidade:");
+                        novoProduto.precouni = ValidaDouble();
+
+                        listproduct.Insert(posicaoInserir-1, novoProduto);
+                        Console.WriteLine("Novo produto inserido com sucesso!\n");
+                        foreach (Produto produto2 in listproduct)
+                        {
+                            DateTime today = DateTime.Today;
+                            DateTime validityDate = today.AddDays(produto2.validade);
+                            Console.WriteLine($"|Nome: {produto2.nome}| Validado até: {validityDate.Day} de {validityDate.ToString("MMMM")} de {validityDate.Year}| Quantidade: {produto2.quantidade}| Preço: {produto2.precouni}|Valor total:{produto2.quantidade * produto2.precouni}€|\n");
+                        }
+                        break;
+                    }
+
+                case 5:
+                    Console.Clear();                                                //mostrar
+                    if (listproduct.Count == 0)
+                    {
+                        Console.WriteLine("Nenhum produto na lista.\n");
+                        break;
+                    }
+                    Console.WriteLine("Produtos cadastrados:");
+                    foreach (Produto produto2 in listproduct)
+                    {
+                        DateTime today = DateTime.Today;
+                        DateTime validityDate = today.AddDays(produto2.validade);
+                        Console.WriteLine($"|Nome: {produto2.nome}| Validado até: {validityDate.Day} de {validityDate.ToString("MMMM")} de {validityDate.Year}| Quantidade: {produto2.quantidade}| Preço: {produto2.precouni}|Valor total:{produto2.quantidade * produto2.precouni}€|\n");
+                    }
+                    break;
+
+                case 6:                                     //Ordenar
+                    Console.Clear();
+                    int escolha;
+                    if (listproduct.Count == 0)
+                    {
+                        Console.WriteLine("Impossível ordenar! Nenhum produto na lista.\n");
+                        break;
+                    }
+                    Console.WriteLine("Produtos cadastrados:");
+                    Console.WriteLine("Deseja ordenar por:");
+                    Console.WriteLine("1. Ordem Alfabética");
+                    Console.WriteLine("2. Preço");
+                    Console.Write("Escolha uma opção: ");
+
+                    escolha = int.Parse(Console.ReadLine());
+
+                    switch (escolha)
+                    {
+                        case 1:                     //ordem alfabetica
+
+
+                            listproduct.Sort((x, y) => string.Compare(x.nome, y.nome));
+                            Console.WriteLine("Produtos ordenados por ordem alfabética:");
+
+                            break;
+                        case 2:
+
+
+                            listproduct.Sort((x, y) => x.precouni.CompareTo(y.precouni));
+                            Console.WriteLine("Produtos ordenados por preço:");
+
+                            break;
+                            default:
+                            Console.WriteLine("Por favor, escolha uma opção valida");
+                                break;
+                    }
+
+                    foreach (Produto produto2 in listproduct)
+                    {
+                        DateTime today = DateTime.Today;
+                        DateTime validityDate = today.AddDays(produto2.validade);
+                        Console.WriteLine($"|Nome: {produto2.nome}| Validado até: {validityDate.Day} de {validityDate.ToString("MMMM")} de {validityDate.Year}| Quantidade: {produto2.quantidade}| Preço: {produto2.precouni}|Valor total:{produto2.quantidade * produto2.precouni}€|\n");
+                    }
+                    break;
+                case 7:                                              //alterar
+                    Console.Clear();
+                    foreach (Produto produto2 in listproduct)
+                    {
+                        DateTime today = DateTime.Today;
+                        DateTime validityDate = today.AddDays(produto2.validade);
+                        Console.WriteLine($"|Nome: {produto2.nome}| Validado até: {validityDate.Day} de {validityDate.ToString("MMMM")} de {validityDate.Year}| Quantidade: {produto2.quantidade}| Preço: {produto2.precouni}|Valor total:{produto2.quantidade * produto2.precouni}€|\n");
+                    }
+                    Console.WriteLine("Ecreva a posicao do produto para alterar");
+                    int posicaoalterar = ValidaInt();
+                    if (posicaoalterar <= 0 || posicaoalterar > listproduct.Count)
+                    {
+                        Console.WriteLine("Posição inválida! " +
+                            "Por favor, escolha uma posição entre 1 e " + listproduct.Count);
+                        break;
+                    }
+
+                    Produto newproduto = default(Produto);
+                    Console.WriteLine("Escreva o nome do novo produto:");
+                    newproduto.nome = ValidaString();
+                    Console.WriteLine("Escreva a validade (em dias):");
+                    newproduto.validade = ValidaInt();
+                    Console.WriteLine("Escreva a quantidade:");
+                    newproduto.quantidade = ValidaInt();
+                    Console.WriteLine("Escreva o preço da unidade:");
+                    newproduto.precouni = ValidaDouble();
+                    listproduct.RemoveAt(posicaoalterar-1);
+                    listproduct.Insert(posicaoalterar-1,newproduto);
+                    Console.Clear() ;
+                    Console.WriteLine(" produto alterado com sucesso!\n");
+                    foreach (Produto produto2 in listproduct)
+                    {
+                        DateTime today = DateTime.Today;
+                        DateTime validityDate = today.AddDays(produto2.validade);
+                        Console.WriteLine($"|Nome: {produto2.nome}| Validado até: {validityDate.Day} de {validityDate.ToString("MMMM")} de {validityDate.Year}| Quantidade: {produto2.quantidade}| Preço: {produto2.precouni}|Valor total:{produto2.quantidade * produto2.precouni}€|\n");
+                    }
+                    break;
+                case 8:                                       //sair
+                       continuar = false;
+                    Console.WriteLine("Encerrando o programa...");
+                    break;
+                default:
+                    Console.WriteLine("Opção inválida! Por favor, tente novamente.\n");
+                    break;
+            }
+        }
+    }
+}
